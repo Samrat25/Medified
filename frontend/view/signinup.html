@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedBook - Appointment System</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #4a6fa5;
+            --primary-dark: #3a5a8a;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --danger: #dc3545;
+            --success: #28a745;
+            --doctor: #e3f2fd;
+            --patient: #e8f5e9;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .card-container {
+            display: flex;
+            justify-content: center;
+            flex-grow: 1;
+            align-items: center;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .role-card {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 30px;
+            margin: 10px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .role-card.doctor {
+            background-color: var(--doctor);
+        }
+        
+        .role-card.patient {
+            background-color: var(--patient);
+        }
+        
+        .role-card.active {
+            border-color: var(--primary);
+            background-color: white;
+        }
+        
+        .role-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .role-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+        
+        .role-description {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: var(--primary-dark);
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        input[type="text"], 
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, 
+        select:focus, 
+        textarea:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .link:hover {
+            text-decoration: underline;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .form-footer {
+            margin-top: 25px;
+            text-align: center;
+            color: var(--gray);
+        }
+        
+        .specialty-fields {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .specialty-fields.show {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: auto;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card {
+                padding: 30px 20px;
+            }
+            
+            .role-selection {
+                flex-direction: column;
+            }
+            
+            .role-card {
+                margin: 10px 0;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">MedBook</div>
+            <div class="tagline">Your trusted healthcare appointment system</div>
+        </header>
+        
+        <div class="card-container">
+            <!-- Role Selection Screen -->
+            <div class="card" id="roleSelection">
+                <h2>I am a...</h2>
+                <div class="role-selection" style="display: flex; justify-content: center; flex-wrap: wrap;">
+                    <div class="role-card doctor" onclick="selectRole('doctor')">
+                        <div class="role-icon"><i class="fas fa-user-md"></i></div>
+                        <div class="role-title">Doctor</div>
+                        <div class="role-description">Healthcare providers can manage appointments and patients</div>
+                        <button class="btn btn-outline">Continue as Doctor</button>
+                    </div>
+                    
+                    <div class="role-card patient" onclick="selectRole('patient')">
+                        <div class="role-icon"><i class="fas fa-user-injured"></i></div>
+                        <div class="role-title">Patient</div>
+                        <div class="role-description">Patients can book appointments with doctors</div>
+                        <button class="btn btn-outline">Continue as Patient</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Doctor Sign Up -->
+            <div class="card hidden" id="doctorSignUp">
+                <h2>Doctor Registration</h2>
+                
+                <div class="form-group">
+                    <label for="doctorName">Full Name</label>
+                    <input type="text" id="doctorName" placeholder="Dr. John Smith">
+                </div>
+                
+                <div class="form-group">
+                    <label for="doctorEmail">Email Address</label>
+                    <input type="email" id="doctorEmail" placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="doctorPassword">Password</label>
+                    <input type="password" id="doctorPassword" placeholder="Create a password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="doctorConfirmPassword">Confirm Password</label>
+                    <input type="password" id="doctorConfirmPassword" placeholder="Confirm your password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="doctorPhone">Phone Number</label>
+                    <input type="tel" id="doctorPhone" placeholder="+1 (123) 456-7890">
+                </div>
+                
+                <div class="form-group">
+                    <label for="doctorSpecialty">Specialty</label>
+                    <select id="doctorSpecialty" onchange="toggleSpecialtyFields(this.value)">
+                        <option value="">Select your specialty</option>
+                        <option value="cardiologist">Cardiologist</option>
+                        <option value="dentist">Dentist</option>
+                        <option value="dermatologist">Dermatologist</option>
+                        <option value="gp">General Practitioner</option>
+                        <option value="neurologist">Neurologist</option>
+                        <option value="oncologist">Oncologist</option>
+                        <option value="ophthalmologist">Ophthalmologist</option>
+                        <option value="pediatrician">Pediatrician</option>
+                        <option value="psychiatrist">Psychiatrist</option>
+                        <option value="surgeon">Surgeon</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="specialty-fields" id="otherSpecialtyField">
+                    <div class="form-group">
+                        <label for="customSpecialty">Specify Your Specialty</label>
+                        <input type="text" id="customSpecialty" placeholder="Enter your medical specialty">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="doctorLicense">Medical License Number</label>
+                    <input type="text" id="doctorLicense" placeholder="Your license number">
+                </div>
+                
+                <button class="btn" onclick="registerDoctor()">Register</button>
+                
+                <div class="form-footer">
+                    Already have an account? <a href="#" class="link" onclick="showDoctorSignIn()">Sign In</a>
+                </div>
+            </div>
+            
+            <!-- Doctor Sign In -->
+            <div class="card hidden" id="doctorSignIn">
+                <h2>Doctor Login</h2>
+                
+                <div class="form-group">
+                    <label for="doctorLoginEmail">Email Address</label>
+                    <input type="email" id="doctorLoginEmail" placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="doctorLoginPassword">Password</label>
+                    <input type="password" id="doctorLoginPassword" placeholder="Enter your password">
+                </div>
+                
+                <div class="form-group text-center">
+                    <a href="#" class="link">Forgot password?</a>
+                </div>
+                
+                <button class="btn" onclick="loginDoctor()">Sign In</button>
+                
+                <div class="form-footer">
+                    Don't have an account? <a href="#" class="link" onclick="showDoctorSignUp()">Register</a>
+                </div>
+            </div>
+            
+            <!-- Patient Sign Up -->
+            <div class="card hidden" id="patientSignUp">
+                <h2>Patient Registration</h2>
+                
+                <div class="form-group">
+                    <label for="patientName">Full Name</label>
+                    <input type="text" id="patientName" placeholder="Your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientEmail">Email Address</label>
+                    <input type="email" id="patientEmail" placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientPassword">Password</label>
+                    <input type="password" id="patientPassword" placeholder="Create a password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientConfirmPassword">Confirm Password</label>
+                    <input type="password" id="patientConfirmPassword" placeholder="Confirm your password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientPhone">Phone Number</label>
+                    <input type="tel" id="patientPhone" placeholder="+1 (123) 456-7890">
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientDob">Date of Birth</label>
+                    <input type="text" id="patientDob" placeholder="MM/DD/YYYY">
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientGender">Gender</label>
+                    <select id="patientGender">
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                        <option value="prefer-not-to-say">Prefer not to say</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="registerPatient()">Register</button>
+                
+                <div class="form-footer">
+                    Already have an account? <a href="#" class="link" onclick="showPatientSignIn()">Sign In</a>
+                </div>
+            </div>
+            
+            <!-- Patient Sign In -->
+            <div class="card hidden" id="patientSignIn">
+                <h2>Patient Login</h2>
+                
+                <div class="form-group">
+                    <label for="patientLoginEmail">Email Address</label>
+                    <input type="email" id="patientLoginEmail" placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientLoginPassword">Password</label>
+                    <input type="password" id="patientLoginPassword" placeholder="Enter your password">
+                </div>
+                
+                <div class="form-group text-center">
+                    <a href="#" class="link">Forgot password?</a>
+                </div>
+                
+                <button class="btn" onclick="loginPatient()">Sign In</button>
+                
+                <div class="form-footer">
+                    Don't have an account? <a href="#" class="link" onclick="showPatientSignUp()">Register</a>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            &copy; 2023 MedBook Appointment System. All rights reserved.
+        </footer>
+    </div>
+
+    <script>
+        // Global variable to track selected role
+        let selectedRole = '';
+        
+        // Role selection function
+        function selectRole(role) {
+            selectedRole = role;
+            document.getElementById('roleSelection').classList.add('hidden');
+            
+            if (role === 'doctor') {
+                showDoctorSignUp();
+            } else {
+                showPatientSignUp();
+            }
+        }
+        
+        // Show doctor sign up form
+        function showDoctorSignUp() {
+            hideAllForms();
+            document.getElementById('doctorSignUp').classList.remove('hidden');
+        }
+        
+        // Show doctor sign in form
+        function showDoctorSignIn() {
+            hideAllForms();
+            document.getElementById('doctorSignIn').classList.remove('hidden');
+        }
+        
+        // Show patient sign up form
+        function showPatientSignUp() {
+            hideAllForms();
+            document.getElementById('patientSignUp').classList.remove('hidden');
+        }
+        
+        // Show patient sign in form
+        function showPatientSignIn() {
+            hideAllForms();
+            document.getElementById('patientSignIn').classList.remove('hidden');
+        }
+        
+        // Return to role selection
+        function returnToRoleSelection() {
+            hideAllForms();
+            document.getElementById('roleSelection').classList.remove('hidden');
+        }
+        
+        // Hide all forms
+        function hideAllForms() {
+            const forms = document.querySelectorAll('.card');
+            forms.forEach(form => {
+                if (!form.id.includes('roleSelection')) {
+                    form.classList.add('hidden');
+                }
+            });
+        }
+        
+        // Toggle specialty fields for doctors
+        function toggleSpecialtyFields(value) {
+            const otherSpecialtyField = document.getElementById('otherSpecialtyField');
+            if (value === 'other') {
+                otherSpecialtyField.classList.add('show');
+            } else {
+                otherSpecialtyField.classList.remove('show');
+            }
+        }
+        
+        // Doctor registration function
+        function registerDoctor() {
+            const name = document.getElementById('doctorName').value;
+            const email = document.getElementById('doctorEmail').value;
+            const password = document.getElementById('doctorPassword').value;
+            const confirmPassword = document.getElementById('doctorConfirmPassword').value;
+            const phone = document.getElementById('doctorPhone').value;
+            const specialty = document.getElementById('doctorSpecialty').value;
+            const license = document.getElementById('doctorLicense').value;
+            
+            // Simple validation
+            if (!name || !email || !password || !confirmPassword || !phone || !specialty || !license) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            // In a real app, you would send this data to your backend
+            console.log('Doctor registration data:', {
+                name, email, password, phone, specialty, license
+            });
+            
+            // Simulate successful registration
+            alert('Registration successful! Redirecting to doctor dashboard...');
+            // window.location.href = 'doctor-dashboard.html';
+        }
+        
+        // Doctor login function
+        function loginDoctor() {
+            const email = document.getElementById('doctorLoginEmail').value;
+            const password = document.getElementById('doctorLoginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please enter your email and password');
+                return;
+            }
+            
+            // In a real app, you would verify credentials with your backend
+            console.log('Doctor login attempt:', { email, password });
+            
+            // Simulate successful login
+            alert('Login successful! Redirecting to doctor dashboard...');
+            // window.location.href = 'doctor-dashboard.html';
+        }
+        
+        // Patient registration function
+        function registerPatient() {
+            const name = document.getElementById('patientName').value;
+            const email = document.getElementById('patientEmail').value;
+            const password = document.getElementById('patientPassword').value;
+            const confirmPassword = document.getElementById('patientConfirmPassword').value;
+            const phone = document.getElementById('patientPhone').value;
+            const dob = document.getElementById('patientDob').value;
+            const gender = document.getElementById('patientGender').value;
+            
+            // Simple validation
+            if (!name || !email || !password || !confirmPassword || !phone || !dob || !gender) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            // In a real app, you would send this data to your backend
+            console.log('Patient registration data:', {
+                name, email, password, phone, dob, gender
+            });
+            
+            // Simulate successful registration
+            alert('Registration successful! Redirecting to patient dashboard...');
+            // window.location.href = 'patient-dashboard.html';
+        }
+        
+        // Patient login function
+        function loginPatient() {
+            const email = document.getElementById('patientLoginEmail').value;
+            const password = document.getElementById('patientLoginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please enter your email and password');
+                return;
+            }
+            
+            // In a real app, you would verify credentials with your backend
+            console.log('Patient login attempt:', { email, password });
+            
+            // Simulate successful login
+            alert('Login successful! Redirecting to patient dashboard...');
+            // window.location.href = 'patient-dashboard.html';
+        }
+    </script>
+</body>
+</html>

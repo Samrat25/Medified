@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Health Diagnostics</title>
+    <style>
+        /* CSS Styles */
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --danger: #dc3545;
+            --success: #28a745;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .diagnostic-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        input[type="text"], 
+        textarea, 
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input[type="text"]:focus, 
+        textarea:focus, 
+        select:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .symptom-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .tag {
+            background-color: var(--light);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #ddd;
+        }
+        
+        .tag:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .tag.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .result-card {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .result-card h3 {
+            margin-top: 0;
+            color: var(--secondary);
+        }
+        
+        .confidence {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .disclaimer {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Health Diagnostics</h1>
+            <p class="subtitle">Describe your symptoms and get AI-powered health insights</p>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="diagnostic-container">
+            <!-- Step 1: Basic Information -->
+            <div class="step active" id="step1">
+                <h2>Tell Us About Yourself</h2>
+                <p>This helps us provide more accurate health information.</p>
+                
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="text" id="age" placeholder="Enter your age">
+                </div>
+                
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender">
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other/Prefer not to say</option>
+                    </select>
+                </div>
+                
+                <div class="btn-group">
+                    <div></div> <!-- Empty div for spacing -->
+                    <button class="btn" onclick="nextStep(1)">Continue</button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Symptom Selection -->
+            <div class="step" id="step2">
+                <h2>What Symptoms Are You Experiencing?</h2>
+                <p>Select all that apply or describe in your own words.</p>
+                
+                <div class="form-group">
+                    <label>Common Symptoms</label>
+                    <div class="symptom-tags" id="commonSymptoms">
+                        <div class="tag" onclick="toggleSymptom(this)">Fever</div>
+                        <div class="tag" onclick="toggleSymptom(this)">Headache</div>
+                        <div class="tag" onclick="toggleSymptom(this)">Fatigue</div>
+                        <div class="tag" onclick="toggleSymptom(this)">Cough</div>
+                        <div class="tag" onclick="toggleSymptom(this)">Sore throat</div>
+                        <div class="tag" onclick="toggleSymptom(this)">Nausea</div>
+                        <div class="tag" onclick="toggleSymptom(this)">Dizziness</div>
+                        <div class="tag" onclick="toggleSymptom(this)">Shortness of breath</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="otherSymptoms">Other Symptoms (Describe in your own words)</label>
+                    <textarea id="otherSymptoms" placeholder="Describe any other symptoms you're experiencing..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="symptomDuration">How long have you had these symptoms?</label>
+                    <select id="symptomDuration">
+                        <option value="">Select duration</option>
+                        <option value="less-than-day">Less than a day</option>
+                        <option value="1-3-days">1-3 days</option>
+                        <option value="4-7-days">4-7 days</option>
+                        <option value="1-2-weeks">1-2 weeks</option>
+                        <option value="more-than-2-weeks">More than 2 weeks</option>
+                    </select>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="prevStep(2)">Back</button>
+                    <button class="btn" onclick="nextStep(2)">Continue</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Additional Information -->
+            <div class="step" id="step3">
+                <h2>Additional Health Information</h2>
+                <p>This helps improve the accuracy of your diagnosis.</p>
+                
+                <div class="form-group">
+                    <label for="medicalHistory">Existing Medical Conditions</label>
+                    <input type="text" id="medicalHistory" placeholder="e.g. diabetes, high blood pressure">
+                </div>
+                
+                <div class="form-group">
+                    <label for="medications">Current Medications</label>
+                    <input type="text" id="medications" placeholder="List any medications you're currently taking">
+                </div>
+                
+                <div class="form-group">
+                    <label for="allergies">Allergies</label>
+                    <input type="text" id="allergies" placeholder="List any known allergies">
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="prevStep(3)">Back</button>
+                    <button class="btn" onclick="analyzeSymptoms()">Get Diagnosis</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Loading -->
+            <div class="step" id="step4">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>Analyzing your symptoms...</h3>
+                    <p>Our AI is reviewing your information to provide the most accurate assessment.</p>
+                </div>
+            </div>
+            
+            <!-- Step 5: Results -->
+            <div class="step" id="step5">
+                <h2>Your AI Health Assessment</h2>
+                <p>Based on the symptoms you provided, here are the possible conditions:</p>
+                
+                <div id="resultsContainer">
+                    <!-- Results will be inserted here by JavaScript -->
+                </div>
+                
+                <div class="disclaimer">
+                    <strong>Important:</strong> This AI assessment is for informational purposes only and is not a substitute for professional medical advice. Always consult with a qualified healthcare provider for diagnosis and treatment.
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="restartDiagnosis()">Start Over</button>
+                    <button class="btn" onclick="alert('Feature coming soon!')">Find a Doctor Nearby</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>AI Health Diagnostics &copy; 2023 | This is a demonstration only</p>
+        </footer>
+    </div>
+
+    <script>
+        // JavaScript for the diagnostics page
+        const totalSteps = 5;
+        let currentStep = 1;
+        let selectedSymptoms = [];
+        
+        // Update progress bar
+        function updateProgress() {
+            const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress').style.width = `${progressPercentage}%`;
+        }
+        
+        // Navigate to next step
+        function nextStep(current) {
+            // Validate current step before proceeding
+            if (current === 1) {
+                const age = document.getElementById('age').value;
+                const gender = document.getElementById('gender').value;
+                
+                if (!age || !gender) {
+                    alert('Please provide your age and gender');
+                    return;
+                }
+            }
+            
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep++;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            updateProgress();
+        }
+        
+        // Navigate to previous step
+        function prevStep(current) {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep--;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            updateProgress();
+        }
+        
+        // Toggle symptom selection
+        function toggleSymptom(element) {
+            element.classList.toggle('selected');
+            const symptom = element.textContent;
+            
+            if (element.classList.contains('selected')) {
+                if (!selectedSymptoms.includes(symptom)) {
+                    selectedSymptoms.push(symptom);
+                }
+            } else {
+                selectedSymptoms = selectedSymptoms.filter(s => s !== symptom);
+            }
+        }
+        
+        // Simulate AI analysis
+        function analyzeSymptoms() {
+            // Show loading screen
+            nextStep(3);
+            
+            // Simulate API call with timeout
+            setTimeout(() => {
+                // Generate mock results based on symptoms
+                const results = generateMockResults();
+                displayResults(results);
+                
+                // Move to results step
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                currentStep++;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                updateProgress();
+            }, 3000);
+        }
+        
+        // Generate mock diagnosis results
+        function generateMockResults() {
+            const otherSymptoms = document.getElementById('otherSymptoms').value.toLowerCase();
+            const duration = document.getElementById('symptomDuration').value;
+            
+            // This is a simplified mock - in a real app, you'd call an AI API
+            const results = [];
+            
+            // Common conditions based on symptoms
+            if (selectedSymptoms.includes('Fever') && 
+                (selectedSymptoms.includes('Cough') || selectedSymptoms.includes('Sore throat'))) {
+                results.push({
+                    condition: 'Upper Respiratory Infection',
+                    confidence: 'High',
+                    description: 'Likely a viral infection affecting your upper respiratory tract.',
+                    recommendations: [
+                        'Get plenty of rest',
+                        'Stay hydrated',
+                        'Use over-the-counter pain relievers if needed',
+                        'See a doctor if symptoms worsen or persist beyond 10 days'
+                    ]
+                });
+            }
+            
+            if (selectedSymptoms.includes('Headache') && selectedSymptoms.includes('Dizziness')) {
+                results.push({
+                    condition: 'Migraine or Tension Headache',
+                    confidence: 'Moderate',
+                    description: 'Your symptoms suggest a headache disorder, possibly migraine or tension-type.',
+                    recommendations: [
+                        'Rest in a quiet, dark room',
+                        'Apply a cold compress to your forehead',
+                        'Consider over-the-counter pain medication',
+                        'Track headache patterns for future reference'
+                    ]
+                });
+            }
+            
+            if (otherSymptoms.includes('stomach') || selectedSymptoms.includes('Nausea')) {
+                results.push({
+                    condition: 'Gastroenteritis',
+                    confidence: 'Moderate',
+                    description: 'Possible stomach flu or food-related illness.',
+                    recommendations: [
+                        'Follow the BRAT diet (bananas, rice, applesauce, toast)',
+                        'Stay hydrated with small, frequent sips of water',
+                        'Avoid dairy and fatty foods',
+                        'Seek medical attention if vomiting persists beyond 24 hours'
+                    ]
+                });
+            }
+            
+            // Fallback if no specific conditions matched
+            if (results.length === 0) {
+                results.push({
+                    condition: 'General Viral Illness',
+                    confidence: 'Moderate',
+                    description: 'Your symptoms suggest a common viral infection that should resolve on its own.',
+                    recommendations: [
+                        'Get adequate rest',
+                        'Drink plenty of fluids',
+                        'Monitor your symptoms',
+                        'Consult a healthcare provider if symptoms worsen or persist'
+                    ]
+                });
+            }
+            
+            return results;
+        }
+        
+        // Display results on the page
+        function displayResults(results) {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '';
+            
+            if (results.length === 0) {
+                container.innerHTML = '<p>No specific conditions identified based on your symptoms.</p>';
+                return;
+            }
+            
+            results.forEach(result => {
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                
+                let recommendationsHTML = '';
+                result.recommendations.forEach(rec => {
+                    recommendationsHTML += `<li>${rec}</li>`;
+                });
+                
+                card.innerHTML = `
+                    <h3>${result.condition} <span class="confidence">${result.confidence} confidence</span></h3>
+                    <p>${result.description}</p>
+                    <h4>Recommendations:</h4>
+                    <ul>${recommendationsHTML}</ul>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Restart the diagnosis process
+        function restartDiagnosis() {
+            // Reset form
+            document.getElementById('age').value = '';
+            document.getElementById('gender').value = '';
+            document.getElementById('otherSymptoms').value = '';
+            document.getElementById('symptomDuration').value = '';
+            document.getElementById('medicalHistory').value = '';
+            document.getElementById('medications').value = '';
+            document.getElementById('allergies').value = '';
+            
+            // Reset symptoms
+            selectedSymptoms = [];
+            document.querySelectorAll('.tag.selected').forEach(tag => {
+                tag.classList.remove('selected');
+            });
+            
+            // Go back to step 1
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep = 1;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

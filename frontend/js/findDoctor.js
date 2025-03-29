@@ -1,3 +1,23 @@
+let mapInitialized = false;
+
+function initMap() {
+    try {
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer();
+        
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: {lat: 37.7749, lng: -122.4194} // Default to San Francisco
+        });
+        
+        directionsRenderer.setMap(map);
+        mapInitialized = true;
+    } catch (error) {
+        console.error("Google Maps failed to load:", error);
+        alert("Maps functionality is currently unavailable. Please try again later.");
+        mapModal.style.display = 'none';
+    }
+}
 document.addEventListener('DOMContentLoaded', function() {
     // DOM elements
     const symptomsInput = document.getElementById('symptoms');
@@ -14,50 +34,182 @@ document.addEventListener('DOMContentLoaded', function() {
     const sampleDoctors = [
         {
             id: 1,
-            name: "Dr. Sarah Johnson",
+            name: "Dr. Dhruba Banerjee, MBBS (Cal)",
             specialty: "Family Medicine",
-            address: "123 Medical Center Dr, Suite 100, Anytown, ST 12345",
-            phone: "(555) 123-4567",
+            address: "opposite Loknath Moshla Corner, 18/2/1 and 32, Kayasthapara Main Rd, opposite Loknath Moshla Corner, Kolkata, West Bengal 700078",
+            phone: "89102 21936",
             distance: 0.8,
             acceptsNewPatients: true,
             rating: 4.7,
-            image: "https://randomuser.me/api/portraits/women/65.jpg"
+            image: "https://lh3.googleusercontent.com/p/AF1QipNikLUS5dg1fZ2X4XS_8E9Tbs20dn8OMEGEvCsD=s680-w680-h510"
         },
         {
             id: 2,
-            name: "Dr. Michael Chen",
-            specialty: "Internal Medicine",
-            address: "456 Health Park Ave, Anytown, ST 12345",
-            phone: "(555) 234-5678",
-            distance: 1.2,
+            name: "Dr. Sanjoy Ghosh",
+            specialty: "Family Medicine",
+            address: "Block, Office Tower, Sector 1, City Centre, Salt Lake, Apollo Clinic Salt Lake, Kolkata, West Bengal 700064",
+            phone: "1860 500 1066",
+            distance: 0.8,
             acceptsNewPatients: true,
-            rating: 4.5,
-            image: "https://randomuser.me/api/portraits/men/32.jpg"
+            rating: 4.7,
+            image: "https://lh3.googleusercontent.com/p/AF1QipOTedCtRG-aM-ym64TB6gAQwPu5lhorR-QASEGN=s1360-w1360-h1020"
         },
         {
             id: 3,
-            name: "Dr. Emily Rodriguez",
-            specialty: "Pediatrics",
-            address: "789 Children's Way, Anytown, ST 12345",
-            phone: "(555) 345-6789",
-            distance: 2.5,
-            acceptsNewPatients: false,
-            rating: 4.9,
-            image: "https://randomuser.me/api/portraits/women/44.jpg"
+            name: "Dr. Sandip Kumar Chandra",
+            specialty: "Family Medicine",
+            address: "Apollo Multispeciality Hospitals, 58, Canal Circular Rd, Kadapara, Phool Bagan, Kankurgachi, Kolkata, West Bengal 700054",
+            phone: "80 4775 7935",
+            distance: 0.8,
+            acceptsNewPatients: true,
+            rating: 4.7,
+            image: "https://lh3.googleusercontent.com/p/AF1QipN48o6kJF8SokaLr9XlwfapZfA5p8d_jpFnKCna=s1360-w1360-h1020"
         },
         {
             id: 4,
-            name: "Dr. James Wilson",
-            specialty: "Cardiology",
-            address: "101 Heart Lane, Suite 200, Anytown, ST 12345",
-            phone: "(555) 456-7890",
-            distance: 3.1,
+            name: "Dr. Amitabha Saha",
+            specialty: "Internal Medicine",
+            address: "SURAKSHA, CENTRAL POLLUTION CONTROL BOARD, 1582, Rajdanga Main Rd, Kasba New Market, Sector E, East Kolkata Twp, Kolkata, West Bengal 700107",
+            phone: "98300 43059",
+            distance: 1.2,
             acceptsNewPatients: true,
-            rating: 4.8,
-            image: "https://randomuser.me/api/portraits/men/75.jpg"
+            rating: 4.5,
+            image: "https://lh3.googleusercontent.com/gps-cs-s/AB5caB85pmgK0qyqUE3nRwoI-hEWlGbRvinZyYIdiuNPTMJXOoF0xhZlNjKyGxUFOqgJuX5tQv-AeaH5BH1dApVLSZW3v2aLXEdZvp6i_xXdmZRqkLaiSefQM2UsRNLXRWbTKHPJn9RhNg=s1360-w1360-h1020"
         },
         {
             id: 5,
+            name: "Dr. Prattay Ghosh",
+            specialty: "Internal Medicine",
+            address: "H9GQ+R5Q, Apollo Beliaghata, Phool Bagan, Kankurgachi, Kolkata, West Bengal 700054",
+            phone: "98300 43059",
+            distance: 1.2,
+            acceptsNewPatients: true,
+            rating: 4.5,
+            image: "https://lh3.googleusercontent.com/p/AF1QipORAd4rrGd06gmN8UBpGxFWtcUjrspBESvrCxC_=s1360-w1360-h1020"
+        },
+        {
+            id: 6,
+            name: "Dr. Hirak Mazumder",
+            specialty: "Internal Medicine",
+            address: "Apollo Multispeciality Hospitals Limited, 58, Canal Circular Rd, beside Mani Square Mall, Kadapara, Phool Bagan, Kankurgachi, Kolkata, West Bengal 700054",
+            phone: "98300 43059",
+            distance: 1.2,
+            acceptsNewPatients: true,
+            rating: 4.5,
+            image: "https://lh5.googleusercontent.com/p/AF1QipN3zp-VxzzfoeUGhRojJPVBQEtqDqhO4GqB11SG=w325-h218-n-k-no"
+        },
+        {
+            id: 7,
+            name: "Dr. Anirban Basu",
+            specialty: "Pediatrics",
+            address: "Desun More, 720, Eastern Metropolitan Bypass, Golpark, Sector I, Kasba, Kolkata, West Bengal 700107",
+            phone: "98304 18151",
+            distance: 2.5,
+            acceptsNewPatients: true,
+            rating: 4.9,
+            image: "https://lh5.googleusercontent.com/p/AF1QipMwvvUEjXMhaczgiK2obhOCsuVyQMEsCe1dWgt_=w325-h218-n-k-no"
+        },
+        {
+            id: 8,
+            name: "Dr Md Rahiul Islam",
+            specialty: "Pediatrics",
+            address: "8/30, KF Medical Centre, Fern Rd, Ballygunge Gardens, Gariahat, Kolkata, West Bengal 700019",
+            phone: "33 6680 0000",
+            distance: 2.5,
+            acceptsNewPatients: true,
+            rating: 4.9,
+            image: "https://lh3.googleusercontent.com/p/AF1QipMa-4yNYfCdyaj5qJv9rToD-QvFeL8KE7h_Dqit=s1360-w1360-h1020"
+        },
+        {
+            id: 9,
+            name: "Dr. Arijita Chatterjee",
+            specialty: "Pediatrics",
+            address: "Desun Hospital, 720, Eastern Metropolitan Bypass, Golpark, Sector I, Kasba, Kolkata, West Bengal 700107",
+            phone: "33 66xx 0000",
+            distance: 2.5,
+            acceptsNewPatients: true,
+            rating: 4.9,
+            image: "https://lh3.googleusercontent.com/p/AF1QipNGJ4WyZ3qM6OelVu2MInyqwzufxfxCgvaWvXZC=s1360-w1360-h1020"
+        },
+        {
+            id: 10,
+            name: "Dr. Saheli Dasgupta",
+            specialty: "Pediatrics",
+            address: "422, Raja Subodh Chandra Mallick Rd, Selimpur, Jodhpur Park, Kolkata, West Bengal 700068",
+            phone: "82401 12375",
+            distance: 2.5,
+            acceptsNewPatients: true,
+            rating: 4.9,
+            image: "https://lh5.googleusercontent.com/p/AF1QipOHKuDsMLzQHTYkS4uUAf8M7Y4qsy99-KgdRABt=w325-h218-n-k-no"
+        },
+        {
+            id: 11,
+            name: "Dr Parijat Deb Choudhury",
+            specialty: "Cardiology",
+            address: "Medithics Clinic, 1412, near R. N. Tagore Hospital, Mukundapur Market, Nitai Nagar, Mukundapur, Kolkata, West Bengal 700099",
+            phone: "33 4058 5544",
+            distance: 2.5,
+            acceptsNewPatients: true,
+            rating: 4.9,
+            image: "https://lh5.googleusercontent.com/p/AF1QipNTtD0Y-5UfUsU9DIqfwaksmNRHDlljjpG5wwDi=w325-h218-n-k-no"
+        },
+        {
+            id: 12,
+            name: "Dr. Anup Khetan",
+            specialty: "Cardiology",
+            address: "1489, Eastern Metropolitan Bypass, Mukundapur Market, Stadium Colony, Mukundapur, Kolkata, West Bengal 700099",
+            phone: "80675 06860",
+            distance: 2.5,
+            acceptsNewPatients: true,
+            rating: 4.9,
+            image: "https://lh5.googleusercontent.com/p/AF1QipMMre6yi-0lmn338bp5UAscOS0_fTZnldwjewQ2=w325-h218-n-k-no"
+        },
+        {
+            id: 13,
+            name: "Dr. Supratip Kundu",
+            specialty: "Cardiology",
+            address: "AMRI Hospital, Department of Cardiology Block-A, Scheme-L11 P-4&5, Gariahat Rd, Dhakuria, Kolkata, West Bengal 700029",
+            phone: "86970 11201",
+            distance: 2.5,
+            acceptsNewPatients: true,
+            rating: 4.9,
+            image: "https://lh5.googleusercontent.com/p/AF1QipPI3dqI8RNxgh-0xnyEmuGB3l6EX7C6BOPC2UHf=w325-h218-n-k-no"
+        },
+        {
+            id: 14,
+            name: "Dr P K Hazra",
+            specialty: "Cardiology",
+            address: "amri hospital, Gariahat Rd, near dhakuria bridge, Kolkata, West Bengal 700029",
+            phone: "98300 70337",
+            distance: 3.1,
+            acceptsNewPatients: true,
+            rating: 4.8,
+            image: "https://lh5.googleusercontent.com/p/AF1QipPhEzljLYvO8rB0q7bpj6QsZMTQWWF5cqSXUsXl=w162-h108-n-k-no"
+        },
+        {
+            id: 15,
+            name: "Dr Surajit Gorai",
+            specialty: "Dermatology",
+            address: "Apollo Multispeciality Hospital (formerly Gleneagles, Kadapara, Phool Bagan, Kankurgachi, Kolkata, West Bengal 700054",
+            phone: "91238 56730",
+            distance: 3.1,
+            acceptsNewPatients: true,
+            rating: 4.8,
+            image: "https://lh5.googleusercontent.com/p/AF1QipMHDFQgm87NaEvHC6DqgLsZ0tRNhCixpxDJBTa5=w162-h108-n-k-no"
+        },
+        {
+            id: 16,
+            name: "Dr. Punam De",
+            specialty: "Dermatology",
+            address: "Skin Vita Clinic, 4th floor Premlata building, 39, Shakespeare Sarani Rd, opp. Kalamandir, Kolkata, West Bengal 700054",
+            phone: "98302 02395",
+            distance: 3.1,
+            acceptsNewPatients: true,
+            rating: 4.8,
+            image: "https://lh5.googleusercontent.com/p/AF1QipPiMI6TiFf8m0aGLCRuBg79okbU_J-sne5aqHGY=w325-h218-n-k-no"
+        },
+        {
+            id: 17,
             name: "Dr. Lisa Park",
             specialty: "Dermatology",
             address: "202 Skin Care Blvd, Anytown, ST 12345",
@@ -74,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
             address: "303 Brain Center Dr, Anytown, ST 12345",
             phone: "(555) 678-9012",
             distance: 4.2,
-            acceptsNewPatients: false,
+            acceptsNewPatients: true,
             rating: 4.7,
             image: "https://randomuser.me/api/portraits/men/82.jpg"
         }
@@ -223,22 +375,128 @@ document.addEventListener('DOMContentLoaded', function() {
             resultsGrid.appendChild(doctorCard);
         });
 
-        // Add event listeners to buttons
-        document.querySelectorAll('.book-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const doctorId = this.getAttribute('data-id');
-                const doctor = sampleDoctors.find(d => d.id == doctorId);
-                alert(`Booking appointment with ${doctor.name}. In a real app, this would redirect to a booking system.`);
-            });
-        });
+        // // Add event listeners to buttons
+        // document.querySelectorAll('.book-btn').forEach(btn => {
+        //     btn.addEventListener('click', function() {
+        //         const doctorId = this.getAttribute('data-id');
+        //         const doctor = sampleDoctors.find(d => d.id == doctorId);
+        //         alert(`Booking appointment with ${doctor.name}. In a real app, this would redirect to a booking system.`);
+        //     });
+        // });
 
-        document.querySelectorAll('.directions-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const doctorId = this.getAttribute('data-id');
-                const doctor = sampleDoctors.find(d => d.id == doctorId);
-                alert(`Getting directions to ${doctor.name}'s office at ${doctor.address}. In a real app, this would open Google Maps.`);
-            });
-        });
+        // document.querySelectorAll('.directions-btn').forEach(btn => {
+        //     btn.addEventListener('click', function() {
+        //         const doctorId = this.getAttribute('data-id');
+        //         const doctor = sampleDoctors.find(d => d.id == doctorId);
+        //         alert(`Getting directions to ${doctor.name}'s office at ${doctor.address}. In a real app, this would open Google Maps.`);
+        //     });
+        // });
+
+        // Add this at the top of the file (after DOM elements are selected)
+const mapModal = document.getElementById('mapModal');
+const closeBtn = document.querySelector('.close-btn');
+const openGoogleMapsBtn = document.getElementById('open-google-maps');
+let currentDoctorForMap = null;
+let map = null;
+let directionsService = null;
+let directionsRenderer = null;
+
+// Close modal when clicking X
+closeBtn.addEventListener('click', function() {
+    mapModal.style.display = 'none';
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    if (event.target === mapModal) {
+        mapModal.style.display = 'none';
+    }
+});
+
+// Open in Google Maps button
+openGoogleMapsBtn.addEventListener('click', function() {
+    if (currentDoctorForMap) {
+        const address = encodeURIComponent(currentDoctorForMap.address);
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${address}`, '_blank');
+    }
+});
+
+// Initialize Google Maps
+function initMap() {
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
+    
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: {lat: 37.7749, lng: -122.4194} // Default to San Francisco
+    });
+    
+    directionsRenderer.setMap(map);
+}
+
+// Updated directions button event listener
+document.querySelectorAll('.directions-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const doctorId = this.getAttribute('data-id');
+        const doctor = sampleDoctors.find(d => d.id == doctorId);
+        currentDoctorForMap = doctor;
+        
+        // Show modal
+        mapModal.style.display = 'block';
+        
+        // Initialize map if not already done
+        if (!map) {
+            initMap();
+        }
+        
+        // Try to get user's current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    
+                    // Center map between user and doctor
+                    const bounds = new google.maps.LatLngBounds();
+                    bounds.extend(userLocation);
+                    bounds.extend({lat: 37.7749, lng: -122.4194}); // Doctor location (sample)
+                    map.fitBounds(bounds);
+                    
+                    // Calculate and display route
+                    calculateAndDisplayRoute(userLocation, {lat: 37.7749, lng: -122.4194});
+                },
+                function(error) {
+                    // If geolocation fails, just center on doctor's location
+                    map.setCenter({lat: 37.7749, lng: -122.4194});
+                    alert("Couldn't get your location. Showing doctor's location only.");
+                }
+            );
+        } else {
+            // Browser doesn't support Geolocation
+            map.setCenter({lat: 37.7749, lng: -122.4194});
+            alert("Geolocation is not supported by your browser. Showing doctor's location only.");
+        }
+    });
+});
+
+function calculateAndDisplayRoute(start, end) {
+    directionsService.route(
+        {
+            origin: start,
+            destination: end,
+            travelMode: google.maps.TravelMode.DRIVING
+        },
+        function(response, status) {
+            if (status === 'OK') {
+                directionsRenderer.setDirections(response);
+            } else {
+                alert('Directions request failed due to ' + status);
+            }
+        }
+    );
+}
 
         resultsDiv.style.display = 'block';
     }

@@ -6,6 +6,7 @@
     <title>Find Nearby Doctors</title>
     <link rel="stylesheet" href="/frontend/style/findDoctor.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=a63a48d41bmsh053b40b87283c6bp19b259jsnb61bc576058a&callback=initMap&libraries=places&v=weekly" async defer></script>
 </head>
 <body>
     <div class="container">
@@ -61,7 +62,20 @@
             <p>No doctors found matching your criteria. Try broadening your search.</p>
         </div>
     </div>
+    <div class="modal" id="mapModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Directions to Doctor</h2>
+            <div id="map" style="width:100%;height:400px;"></div>
+            <div class="map-actions">
+                <button id="open-google-maps">Open in Google Maps</button>
+            </div>
+        </div>
+    </div>
+
+
     
     <script src="/frontend/js/findDoctor.js"></script>
+    <script src="/frontend/api/map.js" async defer></script>
 </body>
 </html>

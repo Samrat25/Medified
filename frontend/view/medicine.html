@@ -199,14 +199,16 @@
         }
 
         .medicine-image {
-            height: 120px;
-            background-color: #f5f8fa;
+            height: 220px;
+            /* background-color: #f5f8fa; */
             border-radius: 6px;
+            background-image: url(/frontend/images/ChatGPT\ Image\ Mar\ 29\,\ 2025\,\ 01_15_32\ PM.png);
+            background-size: cover;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 15px;
-            color: var(--gray);
+            /* color: var(--gray); */
         }
 
         .medicine-image i {
@@ -459,7 +461,7 @@
         </div>
         
         <footer>
-            <p>&copy; 2023 MediCare - Doctor Diagnosis & Online Pharmacy System</p>
+            <p>&copy; 2025 MediCare - Doctor Diagnosis & Online Pharmacy System</p>
         </footer>
     </div>
 
@@ -611,7 +613,6 @@
                 medicineCard.className = 'medicine-card';
                 medicineCard.innerHTML = `
                     <div class="medicine-image">
-                        <i class="fas fa-pills"></i>
                     </div>
                     <div class="medicine-name">${medicine.name}</div>
                     <div class="medicine-company">${medicine.company}</div>

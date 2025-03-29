@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Nearby Doctors</title>
+    <link rel="stylesheet" href="/frontend/style/findDoctor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=a63a48d41bmsh053b40b87283c6bp19b259jsnb61bc576058a&callback=initMap&libraries=places&v=weekly" async defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Find Nearby Doctors</h1>
+        <p>Enter your symptoms and location to find the most appropriate doctors near you.</p>
+        
+        <div class="search-container">
+            <div class="input-group">
+                <label for="symptoms">Describe your symptoms:</label>
+                <input type="text" id="symptoms" placeholder="e.g. headache, fever, stomach pain...">
+            </div>
+            
+            <div class="input-group">
+                <label for="location">Your location:</label>
+                <div class="location-input">
+                    <input type="text" id="location" placeholder="Enter address or use current location">
+                    <button id="current-location-btn"><i class="fas fa-location-arrow"></i></button>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="specialty">Preferred specialty (optional):</label>
+                <select id="specialty">
+                    <option value="">Any specialty</option>
+                    <option value="family">Family Medicine</option>
+                    <option value="pediatrics">Pediatrics</option>
+                    <option value="internal">Internal Medicine</option>
+                    <option value="cardiology">Cardiology</option>
+                    <option value="dermatology">Dermatology</option>
+                    <option value="neurology">Neurology</option>
+                    <option value="orthopedics">Orthopedics</option>
+                    <option value="ent">ENT (Ear, Nose, Throat)</option>
+                </select>
+            </div>
+            
+            <button id="search-btn">Find Doctors</button>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Searching for doctors...</p>
+        </div>
+        
+        <div class="results-container" id="results">
+            <h2>Recommended Doctors</h2>
+            <div class="results-grid" id="results-grid">
+                <!-- Doctors will be displayed here -->
+            </div>
+        </div>
+        
+        <div class="no-results" id="no-results">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>No doctors found matching your criteria. Try broadening your search.</p>
+        </div>
+    </div>
+    <div class="modal" id="mapModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Directions to Doctor</h2>
+            <div id="map" style="width:100%;height:400px;"></div>
+            <div class="map-actions">
+                <button id="open-google-maps">Open in Google Maps</button>
+            </div>
+        </div>
+    </div>
+
+
+    
+    <script src="/frontend/js/findDoctor.js"></script>
+    <script src="/frontend/api/map.js" async defer></script>
+</body>
+</html>

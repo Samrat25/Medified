@@ -199,20 +199,21 @@
         }
 
         .medicine-image {
-            height: 220px;
-            /* background-color: #f5f8fa; */
+            height: 120px;
+            background-color: #f5f8fa;
             border-radius: 6px;
-            background-image: url(/frontend/images/ChatGPT\ Image\ Mar\ 29\,\ 2025\,\ 01_15_32\ PM.png);
-            background-size: cover;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 15px;
-            /* color: var(--gray); */
+            overflow: hidden;
         }
 
-        .medicine-image i {
-            font-size: 40px;
+        .medicine-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
         }
 
         .medicine-name {
@@ -467,6 +468,16 @@
 
     <script>
         // Sample medicine data (in a real app, this would come from a database)
+        const medicineImages = {
+            "Cetirizine": "https://img.freepik.com/free-photo/pills-white-background_23-2147657233.jpg",
+            "Paracetamol": "https://img.freepik.com/free-photo/medicine-capsules-global-health-with-geometric-pattern-digital-remix_53876-104047.jpg",
+            "Vitamin C": "https://img.freepik.com/free-photo/vitamin-c-tablets-orange-background_23-2147749339.jpg",
+            "Oseltamivir": "https://img.freepik.com/free-photo/flu-medicine-capsules_23-2148895575.jpg",
+            "Ibuprofen": "https://img.freepik.com/free-photo/ibuprofen-pills-blue-background_23-2147749342.jpg",
+            "Sumatriptan": "https://img.freepik.com/free-photo/migraine-medicine-capsules_23-2148895576.jpg",
+            "Montelukast": "https://img.freepik.com/free-photo/asthma-medicine-inhaler_23-2148895574.jpg",
+            "default": "https://img.freepik.com/free-photo/medicine-capsules-global-health-with-geometric-pattern-digital-remix_53876-104047.jpg"
+        };
         const medicineDatabase = {
             "Common Cold": [
                 {
@@ -611,8 +622,13 @@
             medicines.forEach(medicine => {
                 const medicineCard = document.createElement('div');
                 medicineCard.className = 'medicine-card';
+                
+                // Get the appropriate image or use default
+                const medicineImage = medicineImages[medicine.name] || medicineImages.default;
+                
                 medicineCard.innerHTML = `
                     <div class="medicine-image">
+                        <img src="${medicineImage}" alt="${medicine.name}">
                     </div>
                     <div class="medicine-name">${medicine.name}</div>
                     <div class="medicine-company">${medicine.company}</div>
